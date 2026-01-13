@@ -39,11 +39,41 @@ This starts the MCP server using `stdio` as the transport mechanism, which allow
 1. Open Cursor / Settings / Cursor Settings
 2. Select MCP
 3. Set the `Name` to JUCE Docs (or whatever), and set the `Type` to `Command`
-3. Set the `Command` to `node /path/to/juce-docs-mcp-server/dist/index.js`,
+4. Set the `Command` to `node /path/to/juce-docs-mcp-server/dist/index.js`,
    replacing `/path/to/juce-docs-mcp-server` with the actual path into your clone
 5. Restart Cursor to apply the changes (it will internally run `node .../dist/index.js`)
 
 Note that Cursor sends MCP requests to _your local server_ that you started with `npm start` above.
+
+### Adding the MCP service to Visual Studio (Tested 2026-01-13)
+
+Visual Studio 2022/2026 with GitHub Copilot extension supports MCP through a built-in configuration.
+
+1. **Access Settings**: In the Copilot Chat window, click the **Wrench** icon, then click the **"+" (Add Source)** to manage MCP servers.
+2. **Configuration**: Visual Studio uses a specific JSON structure. When prompted to edit `.mcp.json`, use the following template (ensure forward slashes `/` are used for paths):
+
+```json
+{
+  "inputs": [],
+  "servers": {
+    "juce-expert": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "C:/path/to/juce-docs-mcp-server/dist/index.js"
+      ],
+      "env": {
+        "NODE_PATH": "C:/path/to/juce-docs-mcp-server/node_modules"
+      }
+    }
+  }
+}
+
+```
+
+3. **Important Note on "Description"**:
+Unlike some other MCP clients, **Visual Studio requires a non-empty `description` field for every tool**. If a tool's description is missing, Visual Studio will fail to load it with a `System.ArgumentException`. Ensure your `index.ts` definitions include description strings.
+4. **Troubleshooting**: If tools are not appearing, try reloading the Copilot Chat window or clearing the Copilot cache folder located in your solution's `.vs` directory.
 
 ### Available Resources
 

@@ -66,9 +66,11 @@ server.resource(
 // Tool for searching classes
 server.tool(
   "search-juce-classes",
-  { query: z.string() },
+  // description added (Mandatory for Visual Studio support)
+  "Searches for JUCE classes based on a query string. Use this to find specific components or classes in the JUCE framework.",
+  { query: z.string(), },
   async ({ query }) => {
-    console.log(`Searching for classes matching: ${query}`);
+    console.error(`Searching for classes matching: ${query}`);
     
     const results = await searchClasses(query);
     
@@ -92,9 +94,11 @@ server.tool(
 // Tool for getting class documentation
 server.tool(
   "get-juce-class-docs",
+    // description added (Mandatory for Visual Studio support)
+  "Retrieves detailed documentation and member functions for a specific JUCE class name.",
   { className: z.string() },
   async ({ className }) => {
-    console.log(`Fetching documentation for class: ${className}`);
+    console.error(`Fetching documentation for class: ${className}`);
     
     const doc = await fetchClassDocumentation(className);
     
