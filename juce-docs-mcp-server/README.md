@@ -98,6 +98,67 @@ Notes:
 - Your docs source choice is saved and reused on next startup.
 - Local docs follow whatever branch/tag your local JUCE checkout is on. If you checkout a beta/develop branch in `~/Code/JUCE`, then regenerate docs, this MCP server will use those docs.
 
+### Single-Command Terminal Setup (Set Source While Adding MCP)
+
+If you want to configure docs source in one terminal command (without calling MCP tools in chat),
+set environment variables when adding the server.
+
+`set-juce-docs-source` options are:
+
+- `source=master`
+- `source=develop`
+- `source=custom-url` with `url`
+- `source=local-path` with `localDocsPath`
+
+Equivalent one-line terminal commands:
+
+```bash
+# Codex: stable JUCE docs (master)
+codex mcp add juce-docs --env JUCE_DOCS_SOURCE=master -- node "$(pwd)/dist/index.js"
+
+# Codex: develop docs
+codex mcp add juce-docs --env JUCE_DOCS_SOURCE=develop -- node "$(pwd)/dist/index.js"
+
+# Codex: custom docs URL
+codex mcp add juce-docs \
+  --env JUCE_DOCS_SOURCE=custom-url \
+  --env JUCE_DOCS_BASE_URL=https://docs.juce.com/develop \
+  -- node "$(pwd)/dist/index.js"
+
+# Codex: local docs path (no docs network fetches)
+codex mcp add juce-docs \
+  --env JUCE_DOCS_SOURCE=local-path \
+  --env JUCE_DOCS_LOCAL_PATH="$HOME/Code/JUCE/docs/doxygen/doc" \
+  -- node "$(pwd)/dist/index.js"
+```
+
+```bash
+# Claude Code: stable JUCE docs (master)
+claude mcp add --scope user -e JUCE_DOCS_SOURCE=master juce-docs -- node "$(pwd)/dist/index.js"
+
+# Claude Code: develop docs
+claude mcp add --scope user -e JUCE_DOCS_SOURCE=develop juce-docs -- node "$(pwd)/dist/index.js"
+
+# Claude Code: custom docs URL
+claude mcp add --scope user \
+  -e JUCE_DOCS_SOURCE=custom-url \
+  -e JUCE_DOCS_BASE_URL=https://docs.juce.com/develop \
+  juce-docs -- node "$(pwd)/dist/index.js"
+
+# Claude Code: local docs path
+claude mcp add --scope user \
+  -e JUCE_DOCS_SOURCE=local-path \
+  -e JUCE_DOCS_LOCAL_PATH="$HOME/Code/JUCE/docs/doxygen/doc" \
+  juce-docs -- node "$(pwd)/dist/index.js"
+```
+
+If `juce-docs` is already added, remove then re-add:
+
+```bash
+codex mcp remove juce-docs
+claude mcp remove --scope user juce-docs
+```
+
 ### Add to MCP Clients (Auto-Start, Recommended)
 
 When configured as a `stdio` MCP server, Codex/Claude/Cursor start this server
