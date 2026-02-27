@@ -29,6 +29,51 @@ npm run build
 
 ## Usage
 
+### Quick Start (Simple Setup)
+
+If you want the easiest setup, follow these steps exactly.
+
+1. Build once:
+
+```bash
+cd /path/to/mcp-servers-jos/juce-docs-mcp-server
+npm install
+npm run build
+```
+
+2. Add this MCP server to your client:
+
+```bash
+# Codex
+codex mcp add juce-docs -- node "$(pwd)/dist/index.js"
+
+# Claude Code
+claude mcp add --scope user juce-docs -- node "$(pwd)/dist/index.js"
+```
+
+3. Check current docs source (default is JUCE `master`):
+
+- Run tool: `get-juce-docs-config`
+
+4. If you want JUCE develop docs instead of master:
+
+- Run tool: `set-juce-docs-source` with `source=develop`
+
+5. If you want local docs from your JUCE checkout (faster, no docs network fetches):
+
+- Run tool: `setup-local-juce-docs` with:
+  - `jucePath=~/Code/JUCE`
+  - `generateIfMissing=true` (only needed if local docs are not generated yet)
+
+6. Switch back to hosted stable docs anytime:
+
+- Run tool: `set-juce-docs-source` with `source=master`
+
+Notes:
+
+- You only need `npm run build` again after pulling/changing this server code.
+- Your docs source choice is saved and reused on next startup.
+
 ### Add to MCP Clients (Auto-Start, Recommended)
 
 When configured as a `stdio` MCP server, Codex/Claude/Cursor start this server
