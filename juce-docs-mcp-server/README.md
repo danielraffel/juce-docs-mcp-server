@@ -26,13 +26,30 @@ npm run build
 
 ## Usage
 
-### Running the Server
+### Add to MCP Clients (Auto-Start, Recommended)
+
+When configured as a `stdio` MCP server, Codex/Claude/Cursor start this server
+automatically when needed. You do not need to run `npm start` manually.
+
+```bash
+# from juce-docs-mcp-server directory
+codex mcp add juce-docs -- node "$(pwd)/dist/index.js"
+claude mcp add --scope user juce-docs -- node "$(pwd)/dist/index.js"
+```
+
+Build/install cadence:
+
+- Run `npm install` once per clone (or when dependencies change)
+- Run `npm run build` after pulling/changing TypeScript source
+
+### Running the Server Manually (Optional)
 
 ```bash
 npm start
 ```
 
-This starts the MCP server using `stdio` as the transport mechanism, which allows it to be used with MCP clients like Claude Desktop App, Continue, or other MCP-compatible applications.
+This starts the MCP server using `stdio`. Manual start is mainly useful for local
+debugging or direct testing.
 
 ### Adding the MCP service to Cursor (tested 2025-03-11)
 
@@ -43,7 +60,8 @@ This starts the MCP server using `stdio` as the transport mechanism, which allow
    replacing `/path/to/juce-docs-mcp-server` with the actual path into your clone
 5. Restart Cursor to apply the changes (it will internally run `node .../dist/index.js`)
 
-Note that Cursor sends MCP requests to _your local server_ that you started with `npm start` above.
+Cursor will start the configured command automatically; no separate `npm start`
+process is required.
 
 ### Adding the MCP service to Visual Studio (Tested 2026-01-13)
 

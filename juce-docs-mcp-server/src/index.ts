@@ -19,7 +19,7 @@ server.resource(
   "class-docs",
   new ResourceTemplate("juce://class/{className}", { list: undefined }),
   async (uri, { className }) => {
-    console.log(`Fetching documentation for class: ${className}`);
+    console.error(`Fetching documentation for class: ${className}`);
     
     // Ensure className is a string
     const classNameStr = Array.isArray(className) ? className[0] : className;
@@ -50,7 +50,7 @@ server.resource(
   "class-list",
   "juce://classes",
   async (uri) => {
-    console.log("Fetching list of all JUCE classes");
+    console.error("Fetching list of all JUCE classes");
     
     const classes = await fetchClassList();
     
@@ -139,12 +139,12 @@ server.prompt(
 // Start the server
 async function main() {
   try {
-    console.log("Starting JUCE Documentation MCP Server...");
+    console.error("Starting JUCE Documentation MCP Server...");
     
     const transport = new StdioServerTransport();
     await server.connect(transport);
     
-    console.log("Server connected and ready to receive requests.");
+    console.error("Server connected and ready to receive requests.");
   } catch (error) {
     console.error("Error starting server:", error);
     process.exit(1);
