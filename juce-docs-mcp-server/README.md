@@ -53,26 +53,50 @@ claude mcp add --scope user juce-docs -- node "$(pwd)/dist/index.js"
 
 3. Check current docs source (default is JUCE `master`):
 
-- Run tool: `get-juce-docs-config`
+- Run tool `get-juce-docs-config` with args:
+
+```json
+{}
+```
 
 4. If you want JUCE develop docs instead of master:
 
-- Run tool: `set-juce-docs-source` with `source=develop`
+- Run tool `set-juce-docs-source` with args:
+
+```json
+{
+  "source": "develop"
+}
+```
 
 5. If you want local docs from your JUCE checkout (faster, no docs network fetches):
 
-- Run tool: `setup-local-juce-docs` with:
-  - `jucePath=~/Code/JUCE`
-  - `generateIfMissing=true` (only needed if local docs are not generated yet)
+- Run tool `setup-local-juce-docs` with args:
+
+```json
+{
+  "jucePath": "~/Code/JUCE",
+  "generateIfMissing": true
+}
+```
+
+`generateIfMissing` is only needed if local docs are not generated yet.
 
 6. Switch back to hosted stable docs anytime:
 
-- Run tool: `set-juce-docs-source` with `source=master`
+- Run tool `set-juce-docs-source` with args:
+
+```json
+{
+  "source": "master"
+}
+```
 
 Notes:
 
 - You only need `npm run build` again after pulling/changing this server code.
 - Your docs source choice is saved and reused on next startup.
+- Local docs follow whatever branch/tag your local JUCE checkout is on. If you checkout a beta/develop branch in `~/Code/JUCE`, then regenerate docs, this MCP server will use those docs.
 
 ### Add to MCP Clients (Auto-Start, Recommended)
 
@@ -148,11 +172,11 @@ Unlike some other MCP clients, **Visual Studio requires a non-empty `description
 
 ### Available Tools
 
-- `/search-juce-classes` - Search for JUCE classes by name
-- `/get-juce-class-docs` - Get documentation for a specific JUCE class
-- `/get-juce-docs-config` - Show current docs source and how to switch it
-- `/set-juce-docs-source` - Switch docs source (master/develop/custom/local)
-- `/setup-local-juce-docs` - Point to a local JUCE checkout and optionally generate docs
+- `search-juce-classes` - Search for JUCE classes by name
+- `get-juce-class-docs` - Get documentation for a specific JUCE class
+- `get-juce-docs-config` - Show current docs source and how to switch it
+- `set-juce-docs-source` - Switch docs source (master/develop/custom/local)
+- `setup-local-juce-docs` - Point to a local JUCE checkout and optionally generate docs
 
 ### Available Prompts
 
@@ -171,24 +195,21 @@ the MCP internally, you can also query it directly via "resource" and
    are defined in the server as direct resource endpoints.  Example:
    `juce://classes`
 
-2. **Tools** use names beginning with `/` and support a following
-   argument, i.e., `/tool-name arg-string`, and provide interactive
-   commands that perform an action. MCP tools start with `/` to
-   distinguish them from resources. This is similar to how slash
-   commands work in many applications such as `Claude Code` or
-   `aider`.  Note that in an IDE chat, the `arg-string` can include
-   spaces and is terminated by end-of-line (according to Claude 3.7).
+2. **Tools** are MCP function calls by name (for example:
+   `search-juce-classes`, `set-juce-docs-source`) plus arguments.
+   Depending on the MCP client UI, these may also appear as slash-style
+   commands.
 
 In summary, when connected to an MCP client (such as via Cursor chat),
 you can access "resources" in the format `protocol://path` and "tools"
-in the format `/tool-name arg string`.
+by tool name plus arguments (with some clients also supporting slash-style syntax).
 
 ## Examples
 
 1. List all available classes: `juce://classes`
 2. Get documentation for a specific class: `juce://class/ValueTree`
-3. Search for all Audio classes: `/search-juce-classes Audio`
-4. Get documentation for specific classes: `/get-juce-class-docs AudioProcessor`
+3. Search for all Audio classes: `search-juce-classes` with `{ "query": "Audio" }`
+4. Get docs for a class: `get-juce-class-docs` with `{ "className": "AudioProcessor" }`
 
 ## Docs Source Configuration
 
