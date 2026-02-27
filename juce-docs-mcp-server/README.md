@@ -9,6 +9,9 @@ An MCP (Model Context Protocol) server that provides access to JUCE Framework C+
 - Search for classes by name
 - Format documentation as markdown
 - Expose documentation through MCP resources and tools
+- Default docs source: `https://docs.juce.com/master`
+- Switch docs source at runtime (master/develop/custom URL/local path)
+- Optional local docs setup from a JUCE checkout path
 
 ## Installation
 
@@ -102,6 +105,9 @@ Unlike some other MCP clients, **Visual Studio requires a non-empty `description
 
 - `/search-juce-classes` - Search for JUCE classes by name
 - `/get-juce-class-docs` - Get documentation for a specific JUCE class
+- `/get-juce-docs-config` - Show current docs source and how to switch it
+- `/set-juce-docs-source` - Switch docs source (master/develop/custom/local)
+- `/setup-local-juce-docs` - Point to a local JUCE checkout and optionally generate docs
 
 ### Available Prompts
 
@@ -139,17 +145,38 @@ in the format `/tool-name arg string`.
 3. Search for all Audio classes: `/search-juce-classes Audio`
 4. Get documentation for specific classes: `/get-juce-class-docs AudioProcessor`
 
-## Changing the JUCE Doc URL
+## Docs Source Configuration
 
-In `juce-docs-mcp-server/src/juce-docs.ts`, edit the line
- ```
- const BASE_URL = 'https://ccrma.stanford.edu/~jos/juce_modules';
- ```
-More up-to-date possibilities include 
- ```
- const BASE_URL = 'https://docs.juce.com/develop';
- const BASE_URL = 'https://docs.juce.com/master';
- ```
+This server defaults to official JUCE **master** docs:
+
+```text
+https://docs.juce.com/master
+```
+
+You can switch sources without editing code by calling MCP tools:
+
+1. `get-juce-docs-config` to inspect current config
+2. `set-juce-docs-source` with one of:
+   - `source=master`
+   - `source=develop`
+   - `source=custom-url` + `url=https://...`
+   - `source=local-path` + `localDocsPath=/path/to/docs`
+3. `setup-local-juce-docs` with:
+   - `jucePath=/path/to/JUCE`
+   - `generateIfMissing=true` (optional)
+
+Configuration is persisted in:
+
+```text
+~/.juce-docs-mcp-server/config.json
+```
+
+You can override config via environment variables:
+
+- `JUCE_DOCS_SOURCE=master|develop|custom-url|local-path`
+- `JUCE_DOCS_BASE_URL=https://...` (for `custom-url`)
+- `JUCE_DOCS_LOCAL_PATH=/path/to/docs` (for `local-path`)
+- `JUCE_DOCS_CONFIG_PATH=/custom/path/config.json` (optional config location)
 
 ## Tips for Effective JUCE Development
 
@@ -201,14 +228,17 @@ When working on a JUCE project, here's how to get the most out of the JUCE Docum
 
 ## Implementation Details
 
-The server fetches documentation from the JUCE documentation hosted at Stanford CCRMA
-(https://ccrma.stanford.edu/~jos/juce_modules/), but of course you can change that, as noted above.
-It processes the HTML documentation in real-time:
+The server processes JUCE Doxygen HTML in real-time from either:
+
+- Official hosted docs (`master`, `develop`, or custom URL)
+- A local docs directory (no network required)
+
+It extracts:
 
 1. Class list is fetched from the annotated class list page
 2. Individual class documentation is parsed from class-specific pages
 3. Documentation is formatted as markdown for consistent display
-4. Results are cached in memory during server runtime
+4. Class list results are cached in memory during server runtime
 
 ## Error Handling
 
