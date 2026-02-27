@@ -103,6 +103,15 @@ Notes:
 If you want to configure docs source in one terminal command (without calling MCP tools in chat),
 set environment variables when adding the server.
 
+Goal: add the MCP server and choose docs source up front.
+
+- Use `master` for stable hosted JUCE docs.
+- Use `local-path` for local JUCE docs (faster, no docs network fetches, follows your local JUCE branch after docs regeneration).
+
+Claude CLI note: put `juce-docs` before `-e` flags.
+
+- Correct pattern: `claude mcp add --scope user juce-docs -e KEY=value -- node "$(pwd)/dist/index.js"`
+
 `set-juce-docs-source` options are:
 
 - `source=master`
@@ -134,22 +143,50 @@ codex mcp add juce-docs \
 
 ```bash
 # Claude Code: stable JUCE docs (master)
-claude mcp add --scope user -e JUCE_DOCS_SOURCE=master juce-docs -- node "$(pwd)/dist/index.js"
+claude mcp add --scope user juce-docs -e JUCE_DOCS_SOURCE=master -- node "$(pwd)/dist/index.js"
 
 # Claude Code: develop docs
-claude mcp add --scope user -e JUCE_DOCS_SOURCE=develop juce-docs -- node "$(pwd)/dist/index.js"
+claude mcp add --scope user juce-docs -e JUCE_DOCS_SOURCE=develop -- node "$(pwd)/dist/index.js"
 
 # Claude Code: custom docs URL
-claude mcp add --scope user \
+claude mcp add --scope user juce-docs \
   -e JUCE_DOCS_SOURCE=custom-url \
   -e JUCE_DOCS_BASE_URL=https://docs.juce.com/develop \
-  juce-docs -- node "$(pwd)/dist/index.js"
+  -- node "$(pwd)/dist/index.js"
 
 # Claude Code: local docs path
-claude mcp add --scope user \
+claude mcp add --scope user juce-docs \
   -e JUCE_DOCS_SOURCE=local-path \
   -e JUCE_DOCS_LOCAL_PATH="$HOME/Code/JUCE/docs/doxygen/doc" \
-  juce-docs -- node "$(pwd)/dist/index.js"
+  -- node "$(pwd)/dist/index.js"
+```
+
+Most common copy/paste options:
+
+For local JUCE docs (from your local JUCE checkout, e.g. master branch):
+
+```bash
+# Codex
+codex mcp add juce-docs \
+  --env JUCE_DOCS_SOURCE=local-path \
+  --env JUCE_DOCS_LOCAL_PATH="$HOME/Code/JUCE/docs/doxygen/doc" \
+  -- node "$(pwd)/dist/index.js"
+
+# Claude
+claude mcp add --scope user juce-docs \
+  -e JUCE_DOCS_SOURCE=local-path \
+  -e JUCE_DOCS_LOCAL_PATH="$HOME/Code/JUCE/docs/doxygen/doc" \
+  -- node "$(pwd)/dist/index.js"
+```
+
+If you want hosted master docs instead:
+
+```bash
+# Codex
+codex mcp add juce-docs --env JUCE_DOCS_SOURCE=master -- node "$(pwd)/dist/index.js"
+
+# Claude
+claude mcp add --scope user juce-docs -e JUCE_DOCS_SOURCE=master -- node "$(pwd)/dist/index.js"
 ```
 
 If `juce-docs` is already added, remove then re-add:
