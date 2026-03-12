@@ -16,8 +16,8 @@ Fork of [josmithiii/mcp-servers-jos](https://github.com/josmithiii/mcp-servers-j
 
 ```bash
 # 1. Clone and build
-git clone https://github.com/danielraffel/mcp-servers-jos.git
-cd mcp-servers-jos
+git clone https://github.com/danielraffel/juce-docs-mcp-server.git
+cd juce-docs-mcp-server
 npm install && npm run build
 
 # 2. Register with your AI client (auto-starts the server when needed)
@@ -75,7 +75,7 @@ Available environment variables:
 
 1. Open Cursor Settings > MCP
 2. Set the **Name** to `JUCE Docs` and **Type** to `Command`
-3. Set **Command** to `node /path/to/mcp-servers-jos/dist/index.js`
+3. Set **Command** to `node /path/to/juce-docs-mcp-server/dist/index.js`
 4. Restart Cursor
 
 Cursor starts the server automatically — no separate process needed.
@@ -90,7 +90,7 @@ Visual Studio 2022/2026 with GitHub Copilot supports MCP. In the Copilot Chat wi
     "juce-docs": {
       "type": "stdio",
       "command": "node",
-      "args": ["C:/path/to/mcp-servers-jos/dist/index.js"]
+      "args": ["C:/path/to/juce-docs-mcp-server/dist/index.js"]
     }
   }
 }
